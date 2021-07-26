@@ -1,0 +1,35 @@
+{
+  "name": "express-mesto",
+  "version": "1.0.0",
+  "description": "__________________",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "npx eslint",
+    "start": "nodemon app.js",
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ValeriyVStolyar/express-mesto.git"
+  },
+  "keywords": [],
+  "author": "ValeriyVStolyar",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ValeriyVStolyar/express-mesto/issues"
+  },
+  "homepage": "https://github.com/ValeriyVStolyar/express-mesto#readme",
+  "devDependencies": {
+    "eslint": "^7.31.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-react": "^7.24.0",
+    "nodemon": "^2.0.12"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.13.3"
+  }
+}
