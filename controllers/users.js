@@ -1,36 +1,79 @@
 const User = require('../models/user');
+// const models = require('mongoose');
 
 module.exports.getUsers = (req, res) => {
   User.find({})
   //  .populate('user')
-  //  .then(users => res.send({ data: users }))
-    .then(users => res.send(req.params))
+    .then(users => {
+      console.log(users)
+      res.send({ data: users })
+    })
+  //  .then(users => res.send(req.params))
     .catch(err => res.status(500).send({ message: err.message }));
 };
 
-// module.exports.getUsersById = (req, res) => {
-//   User.find({})
-//   //  .populate('user')
-//     .then(res.send(req.params))
-//     .then(users => res.send({ data: users }))
-//     .catch(err => res.status(500).send({ message: err.message }));
-// };
+module.exports.getUserById = (req, res) => {
+  User.findById(req.params.userId)
+//  User.find({userId: req.params.userId})
+  //  .populate('user')
+  //  .then(res.send(req.params))
+  //  .then(users => res.send({ data: users }))
+    .then(user => {
+      console.log(user)
+      res.send({ data: user })
+    })
+    .catch(err => res.status(409).send({ message: err.message }));
+};
 
 module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;  // достанем идентификатор
 
   User.create({ name, about, avatar })
-    .then(user => res.send({ data: user }))
+  // User.create(req.body)
+    console.log(user)
+    .then(user => {
+      console.log(user)
+      res.send({ data: user })
+    })
+  //  .then((user) => res.status(200).send(user))
     .catch(err => res.status(500).send({ message: err.message }));
 };
 
+// module.exports.createUser = (req, res) => {
+//   // const { name, age } = req.body;  // достанем идентификатор
+//   // console.log(req.body)
+//   // const name = "Fedor"
+//   // const age = "23"
+//   // console.log(name)
+//   // console.log({age})
+
+//   // User.create({ name, age })
+//   return User.create(req.body)
+//     // console.log(user)
+//     .then(user => res.send({ data: user }))
+//   //  .then((user) => res.status(200).send(user))
+//     .catch(err => res.status(500).send({ message: err.message }));
+// };
 
 
 
-const users = require('../models/user.js');
-module.exports.getUsersById = (req, res) => {
-  res.send(req.params);
-}
+// const { useres } = require('../models/user');
+
+// const useres = [
+//       { name: 'Мария', age: 22 },
+//       { name: 'Виктор', age: 30 },
+//       { name: 'Анастасия', age: 48 },
+//       { name: 'Алексей', age: 51 }
+//     ]
+
+
+// module.exports.getUsersById = (req, res) => {
+// //  res.send(req.params);
+//   // res.send(req.params);
+//   // res.send(useres);
+//   const { name, age } = User.useres[req.params.userId];
+//   res.send(`Имя ${name}, возраст ${age}`);
+// }
 
 // module.exports.getUsers = (req, res) => {
 //   //res.send(req.params);
