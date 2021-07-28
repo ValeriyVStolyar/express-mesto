@@ -27,12 +27,15 @@ module.exports.getUserById = (req, res) => {
 
 module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;  // достанем идентификатор
-
+  // console.log(req.body)
+  console.log(name)
   User.create({ name, about, avatar })
   // User.create(req.body)
-    console.log(user)
-    .then(user => {
-      console.log(user)
+    // console.log(user)
+    // console.log(req.body)
+    .then((user) => {
+    //  console.log(user)
+    //  console.log(req.body)
       res.send({ data: user })
     })
   //  .then((user) => res.status(200).send(user))

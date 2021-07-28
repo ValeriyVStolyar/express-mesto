@@ -13,20 +13,20 @@ const cardSchema = new mongoose.Schema({
     minlength: 2,
     maxlength: 30,
   },
-  owner: {
-    type: ObjectId, // ссылка на модель автора карточки
-    required: true,
-  },
-  likes: {
-    type: ObjectId, // список лайкнувших пост пользователей
-    required: true,
-    default: {},
-  },
-  createdAt: {
-    type: Date, // дата создания
-    required: true,
-    default: Date.now,
-  }
+  // owner: {
+  //   type: ObjectId, // ссылка на модель автора карточки
+  //   required: true,
+  // },
+  // likes: {
+  //   type: ObjectId, // список лайкнувших пост пользователей
+  //   required: true,
+  //   default: {},
+  // },
+  // createdAt: {
+  //   type: Date, // дата создания
+  //   required: true,
+  //   default: Date.now,
+  // }
 });
 
 module.exports = mongoose.model('card', cardSchema);
