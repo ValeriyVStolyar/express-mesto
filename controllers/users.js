@@ -42,6 +42,40 @@ module.exports.createUser = (req, res) => {
     .catch(err => res.status(500).send({ message: err.message }));
 };
 
+module.exports.updateUser = (req, res) => {
+  const { name, about } = req.body;  // достанем идентификатор
+  // console.log(req.body)
+  // req.params.me == req.user._id;
+  console.log(name)
+  // User.updateOne(req.user._id, { name, about })
+  User.findByIdAndUpdate(req.user._id, { name, about })
+  // User.create(req.body)
+    // console.log(user)
+    // console.log(req.body)
+    .then((user) => {
+    //  console.log(user)
+    //  console.log(req.body)
+      res.send({ data: user })
+    })
+  //  .then((user) => res.status(200).send(user))
+    .catch(err => res.status(500).send({ message: err.message }));
+};
+
+module.exports.updateAvatar = (req, res) => {
+  const { avatar } = req.body;  // достанем идентификатор
+  // console.log(req.body)
+  console.log(avatar)
+  User.findByIdAndUpdate(req.user._id, { avatar })
+    .then((user) => {
+      res.send({ data: user })
+    })
+    .catch(err => res.status(500).send({ message: err.message }));
+};
+
+// router.use((req, res) => { // ошибочный роут
+//   res.status(404).send({ ... });
+// }
+
 // module.exports.createUser = (req, res) => {
 //   // const { name, age } = req.body;  // достанем идентификатор
 //   // console.log(req.body)

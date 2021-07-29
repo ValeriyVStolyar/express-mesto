@@ -13,10 +13,11 @@ const cardSchema = new mongoose.Schema({
     minlength: 2,
     maxlength: 30,
   },
-  // owner: {
-  //   type: ObjectId, // ссылка на модель автора карточки
-  //   required: true,
-  // },
+  owner: {
+    // type: ObjectId, // ссылка на модель автора карточки
+    type: String,
+    required: true,
+  },
   // likes: {
   //   type: ObjectId, // список лайкнувших пост пользователей
   //   required: true,

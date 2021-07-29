@@ -12,8 +12,6 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use('/users', usersRouter);
-
 app.use((req, res, next) => {
   req.user = {
     _id: '610010225b182b6448caf134' // вставьте сюда _id созданного в предыдущем пункте пользователя
@@ -22,7 +20,13 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);
+// app.use('/*', errorRouter);
+
+app.use((req, res) => {
+  res.status(404).send({ "message": "Запрашиваемый пользователь не найден" });
+})
 
 // подключаемся к серверу mongo
 mongoose.connect('mongodb://localhost:27017/mestodb', {
