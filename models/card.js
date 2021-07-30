@@ -14,20 +14,17 @@ const cardSchema = new mongoose.Schema({
     maxlength: 30,
   },
   owner: {
-    // type: ObjectId, // ссылка на модель автора карточки
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
   },
-  // likes: {
-  //   type: ObjectId, // список лайкнувших пост пользователей
-  //   required: true,
-  //   default: {},
-  // },
-  // createdAt: {
-  //   type: Date, // дата создания
-  //   required: true,
-  //   default: Date.now,
-  // }
+  likes: [{
+    type: mongoose.Schema.Types.ObjectId, // список лайкнувших пост пользователей
+    default: []
+  }],
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
 });
 
 module.exports = mongoose.model('card', cardSchema);

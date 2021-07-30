@@ -1,138 +1,118 @@
 const User = require('../models/user');
-// const models = require('mongoose');
+
+const CREATE_OK = 201;
+const VALIDATION_ERROR = 400;
+const ID_ERROR = 404;
+const ERROR_CODE = 500;
 
 module.exports.getUsers = (req, res) => {
   User.find({})
-  //  .populate('user')
     .then(users => {
-      console.log(users)
       res.send({ data: users })
     })
-  //  .then(users => res.send(req.params))
-    .catch(err => res.status(500).send({ message: err.message }));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return res.status(VALIDATION_ERROR)
+          .send({
+            message: 'Переданы некорректные данные при создании пользователя.'
+          });
+      }
+      return res.status(ERROR_CODE)
+        .send({
+          message: 'Ошибка по умолчанию.'
+        });
+    });
 };
 
 module.exports.getUserById = (req, res) => {
   User.findById(req.params.userId)
-//  User.find({userId: req.params.userId})
-  //  .populate('user')
-  //  .then(res.send(req.params))
-  //  .then(users => res.send({ data: users }))
     .then(user => {
-      console.log(user)
       res.send({ data: user })
     })
-    .catch(err => res.status(409).send({ message: err.message }));
+    // .catch(err => res.status(409).send({ message: err.message }));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return res.status(ID_ERROR)
+          .send({
+            message: 'Пользователь по указанному _id не найден.'
+          });
+      }
+      return res.status(ERROR_CODE)
+        .send({
+          message: 'Ошибка по умолчанию.'
+        });
+    });
 };
 
 module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;  // достанем идентификатор
-  // console.log(req.body)
-  console.log(name)
   User.create({ name, about, avatar })
-  // User.create(req.body)
-    // console.log(user)
-    // console.log(req.body)
     .then((user) => {
-    //  console.log(user)
-    //  console.log(req.body)
-      res.send({ data: user })
+      res.status(CREATE_OK).send({ data: user })
     })
-  //  .then((user) => res.status(200).send(user))
-    .catch(err => res.status(500).send({ message: err.message }));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return res.status(VALIDATION_ERROR)
+          .send({
+            message: 'Переданы некорректные данные при создании пользователя.'
+          });
+      }
+      return res.status(ERROR_CODE)
+        .send({
+          message: 'Ошибка по умолчанию.'
+        });
+    });
 };
 
 module.exports.updateUser = (req, res) => {
   const { name, about } = req.body;  // достанем идентификатор
-  // console.log(req.body)
-  // req.params.me == req.user._id;
-  console.log(name)
-  // User.updateOne(req.user._id, { name, about })
   User.findByIdAndUpdate(req.user._id, { name, about })
-  // User.create(req.body)
-    // console.log(user)
-    // console.log(req.body)
     .then((user) => {
-    //  console.log(user)
-    //  console.log(req.body)
       res.send({ data: user })
     })
-  //  .then((user) => res.status(200).send(user))
-    .catch(err => res.status(500).send({ message: err.message }));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return res.status(VALIDATION_ERROR)
+          .send({
+            message: 'Переданы некорректные данные при обновлении профиля.'
+          });
+      };
+      if (err.name === 'IdError') {
+        return res.status(ID_ERROR)
+          .send({
+            message: 'Пользователь с указанным _id не найден.'
+          });
+      };
+      return res.status(ERROR_CODE)
+        .send({
+          message: 'Ошибка по умолчанию.'
+        });
+    });
 };
 
 module.exports.updateAvatar = (req, res) => {
   const { avatar } = req.body;  // достанем идентификатор
-  // console.log(req.body)
   console.log(avatar)
   User.findByIdAndUpdate(req.user._id, { avatar })
     .then((user) => {
       res.send({ data: user })
     })
-    .catch(err => res.status(500).send({ message: err.message }));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return res.status(VALIDATION_ERROR)
+          .send({
+            message: 'Переданы некорректные данные при обновлении аватара.'
+          });
+      };
+      if (err.name === 'IdError') {
+        return res.status(ID_ERROR)
+          .send({
+            message: 'Пользователь с указанным _id не найден.'
+          });
+      };
+      return res.status(ERROR_CODE)
+        .send({
+          message: 'Ошибка по умолчанию.'
+        });
+    });
 };
-
-// router.use((req, res) => { // ошибочный роут
-//   res.status(404).send({ ... });
-// }
-
-// module.exports.createUser = (req, res) => {
-//   // const { name, age } = req.body;  // достанем идентификатор
-//   // console.log(req.body)
-//   // const name = "Fedor"
-//   // const age = "23"
-//   // console.log(name)
-//   // console.log({age})
-
-//   // User.create({ name, age })
-//   return User.create(req.body)
-//     // console.log(user)
-//     .then(user => res.send({ data: user }))
-//   //  .then((user) => res.status(200).send(user))
-//     .catch(err => res.status(500).send({ message: err.message }));
-// };
-
-
-
-// const { useres } = require('../models/user');
-
-// const useres = [
-//       { name: 'Мария', age: 22 },
-//       { name: 'Виктор', age: 30 },
-//       { name: 'Анастасия', age: 48 },
-//       { name: 'Алексей', age: 51 }
-//     ]
-
-
-// module.exports.getUsersById = (req, res) => {
-// //  res.send(req.params);
-//   // res.send(req.params);
-//   // res.send(useres);
-//   const { name, age } = User.useres[req.params.userId];
-//   res.send(`Имя ${name}, возраст ${age}`);
-// }
-
-// module.exports.getUsers = (req, res) => {
-//   //res.send(req.params);
-//   // const { id, books, list } = req.params;
-
-//   //if (!users[req.params.id]) {
-//   //  res.send(`Такого пользователя не существует((`);
-//   //  return;
-//   //}
-//   //res.send('ttt');
-//   // const name = 100;
-//   // const age = 200;
-//   //const { name, age } = users[req.params.id];
-//   //res.send(users[req.params.id]);
-//   //res.send('ttt');
-//   //res.send('console.log(name)');
-//   // res.send(console.log(name));
-//   // res.send(console.log(age));
-//   const { name, age } = users[req.params.id];
-
-//   // res.send(`Пользователь ${id}, ${books} лет ${list}`);
-//   res.send(`Пользователь ${name}, ${age} лет`);
-// };
-
-// module.exports = router; // экспортировали роутер
