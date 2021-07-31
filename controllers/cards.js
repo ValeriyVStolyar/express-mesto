@@ -47,19 +47,23 @@ module.exports.createCard = (req, res) => {
 
 module.exports.deleteCard = (req, res) => {
   Card.findByIdAndDelete(req.params.cardId)
+    .orFail(new Error('NotValidId'))
     .then(card => {
-      console.log('card')
-      console.log(card)
       res.send({ data: card })
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        return res.status(ID_ERROR)
+      if (err.name === 'CastError') {
+        res.status(VALIDATION_ERROR)
+          .send({
+            message: 'Невалидный id.'
+          });
+      } else if (err.message === 'NotValidId') {
+        res.status(ID_ERROR)
           .send({
             message: 'Карточка с указанным _id не найдена.'
           });
       }
-      return res.status(ERROR_CODE)
+      res.status(ERROR_CODE)
         .send({
           message: 'Ошибка по умолчанию.'
         });
@@ -71,15 +75,25 @@ module.exports.likeCard = (req, res) => Card.findByIdAndUpdate(
   { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
   { new: true },
 )
+  .orFail(new Error('NotValidId'))
   .then((card) => res.send({ data: card }))
   .catch((err) => {
-    if (err.name === 'ValidationError') {
+    if (err.name === 'CastError') {
+      res.status(VALIDATION_ERROR)
+        .send({
+          message: 'Невалидный id.'
+        });
+    } else if (err.message === 'NotValidId') {
+      res.status(ID_ERROR)
+        .send({
+          message: 'Карточка с указанным _id не найдена.'
+        });
+    } else if (err.name === 'ValidationError') {
       return res.status(VALIDATION_ERROR)
         .send({
           message: 'Переданы некорректные данные для постановки лайка.'
         });
-    }
-    return res.status(ERROR_CODE)
+    } else return res.status(ERROR_CODE)
       .send({
         message: 'Ошибка по умолчанию.'
       });
@@ -90,15 +104,25 @@ module.exports.dislikeCard = (req, res) => Card.findByIdAndUpdate(
   { $pull: { likes: req.user._id } }, // убрать _id из массива
   { new: true },
 )
+  .orFail(new Error('NotValidId'))
   .then((card) => res.send({ data: card }))
   .catch((err) => {
-    if (err.name === 'ValidationError') {
+    if (err.name === 'CastError') {
+      res.status(VALIDATION_ERROR)
+        .send({
+          message: 'Невалидный id.'
+        });
+    } else if (err.message === 'NotValidId') {
+      res.status(ID_ERROR)
+        .send({
+          message: 'Карточка с указанным _id не найдена.'
+        });
+    } else if (err.name === 'ValidationError') {
       return res.status(VALIDATION_ERROR)
         .send({
           message: 'Переданы некорректные данные для снятии лайка.'
         });
-    }
-    return res.status(ERROR_CODE)
+    } else return res.status(ERROR_CODE)
       .send({
         message: 'Ошибка по умолчанию.'
       });

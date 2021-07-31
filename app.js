@@ -2,6 +2,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const helmet = require('helmet');
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
 
@@ -10,6 +11,8 @@ const ROUT_ERROR = 404;
 // Слушаем 3000 порт
 const { PORT = 3000, BASE_PATH } = process.env;
 const app = express();
+
+app.use(helmet());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

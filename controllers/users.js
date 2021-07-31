@@ -11,13 +11,13 @@ module.exports.getUsers = (req, res) => {
       res.send({ data: users })
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        return res.status(VALIDATION_ERROR)
+      if (err.message === 'ValidationError') {
+        res.status(VALIDATION_ERROR)
           .send({
             message: 'Переданы некорректные данные при создании пользователя.'
           });
       }
-      return res.status(ERROR_CODE)
+      res.status(ERROR_CODE)
         .send({
           message: 'Ошибка по умолчанию.'
         });
@@ -26,21 +26,26 @@ module.exports.getUsers = (req, res) => {
 
 module.exports.getUserById = (req, res) => {
   User.findById(req.params.userId)
+    .orFail(new Error('NotValidId'))
     .then(user => {
       res.send({ data: user })
     })
-    // .catch(err => res.status(409).send({ message: err.message }));
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        return res.status(ID_ERROR)
+      if (err.name === 'CastError') {
+        res.status(VALIDATION_ERROR)
+          .send({
+            message: 'Невалидный id.'
+          });
+      } else if (err.message === 'NotValidId') {
+        res.status(ID_ERROR)
           .send({
             message: 'Пользователь по указанному _id не найден.'
           });
-      }
-      return res.status(ERROR_CODE)
-        .send({
-          message: 'Ошибка по умолчанию.'
-        });
+      } else
+        res.status(ERROR_CODE)
+          .send({
+            message: 'Ошибка по умолчанию.'
+          });
     });
 };
 
@@ -66,24 +71,35 @@ module.exports.createUser = (req, res) => {
 
 module.exports.updateUser = (req, res) => {
   const { name, about } = req.body;  // достанем идентификатор
-  User.findByIdAndUpdate(req.user._id, { name, about })
+  User.findByIdAndUpdate(
+    req.user._id, { name, about }, { new: true, runValidators: true },
+  )
     .then((user) => {
       res.send({ data: user })
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === 'CastError') {
+        res.status(VALIDATION_ERROR)
+          .send({
+            message: 'Невалидный id.'
+          });
+      } else if (err.message === 'NotValidId') {
+        res.status(ID_ERROR)
+          .send({
+            message: 'Пользователь по указанному _id не найден.'
+          });
+      } else if (err.name === 'ValidationError') {
         return res.status(VALIDATION_ERROR)
           .send({
             message: 'Переданы некорректные данные при обновлении профиля.'
           });
-      };
-      if (err.name === 'IdError') {
+      }
+      else if (err.name === 'IdError') {
         return res.status(ID_ERROR)
           .send({
             message: 'Пользователь с указанным _id не найден.'
           });
-      };
-      return res.status(ERROR_CODE)
+      } else return res.status(ERROR_CODE)
         .send({
           message: 'Ошибка по умолчанию.'
         });
@@ -92,19 +108,29 @@ module.exports.updateUser = (req, res) => {
 
 module.exports.updateAvatar = (req, res) => {
   const { avatar } = req.body;  // достанем идентификатор
-  console.log(avatar)
-  User.findByIdAndUpdate(req.user._id, { avatar })
+  User.findByIdAndUpdate(
+    req.user._id, { avatar }, { new: true, runValidators: true },
+  )
     .then((user) => {
       res.send({ data: user })
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === 'CastError') {
+        res.status(VALIDATION_ERROR)
+          .send({
+            message: 'Невалидный id.'
+          });
+      } else if (err.message === 'NotValidId') {
+        res.status(ID_ERROR)
+          .send({
+            message: 'Пользователь по указанному _id не найден.'
+          });
+      } else if (err.name === 'ValidationError') {
         return res.status(VALIDATION_ERROR)
           .send({
             message: 'Переданы некорректные данные при обновлении аватара.'
           });
-      };
-      if (err.name === 'IdError') {
+      } else if (err.name === 'IdError') {
         return res.status(ID_ERROR)
           .send({
             message: 'Пользователь с указанным _id не найден.'
