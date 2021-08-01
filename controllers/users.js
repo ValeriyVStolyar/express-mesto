@@ -7,19 +7,19 @@ const ERROR_CODE = 500;
 
 module.exports.getUsers = (req, res) => {
   User.find({})
-    .then(users => {
-      res.send({ data: users })
+    .then((users) => {
+      res.send({ data: users });
     })
     .catch((err) => {
       if (err.message === 'ValidationError') {
         res.status(VALIDATION_ERROR)
           .send({
-            message: 'Переданы некорректные данные при создании пользователя.'
+            message: 'Переданы некорректные данные при создании пользователя.',
           });
       }
       res.status(ERROR_CODE)
         .send({
-          message: 'Ошибка по умолчанию.'
+          message: 'Ошибка по умолчанию.',
         });
     });
 };
@@ -27,118 +27,119 @@ module.exports.getUsers = (req, res) => {
 module.exports.getUserById = (req, res) => {
   User.findById(req.params.userId)
     .orFail(new Error('NotValidId'))
-    .then(user => {
-      res.send({ data: user })
+    .then((user) => {
+      res.send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(VALIDATION_ERROR)
           .send({
-            message: 'Невалидный id.'
+            message: 'Невалидный id.',
           });
       } else if (err.message === 'NotValidId') {
         res.status(ID_ERROR)
           .send({
-            message: 'Пользователь по указанному _id не найден.'
+            message: 'Пользователь по указанному _id не найден.',
           });
-      } else
+      } else {
         res.status(ERROR_CODE)
           .send({
-            message: 'Ошибка по умолчанию.'
+            message: 'Ошибка по умолчанию.',
           });
+      }
     });
 };
 
 module.exports.createUser = (req, res) => {
-  const { name, about, avatar } = req.body;  // достанем идентификатор
+  const { name, about, avatar } = req.body; // достанем идентификатор
   User.create({ name, about, avatar })
     .then((user) => {
-      res.status(CREATE_OK).send({ data: user })
+      res.status(CREATE_OK).send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return res.status(VALIDATION_ERROR)
           .send({
-            message: 'Переданы некорректные данные при создании пользователя.'
+            message: 'Переданы некорректные данные при создании пользователя.',
           });
       }
       return res.status(ERROR_CODE)
         .send({
-          message: 'Ошибка по умолчанию.'
+          message: 'Ошибка по умолчанию.',
         });
     });
 };
 
 module.exports.updateUser = (req, res) => {
-  const { name, about } = req.body;  // достанем идентификатор
+  const { name, about } = req.body; // достанем идентификатор
   User.findByIdAndUpdate(
     req.user._id, { name, about }, { new: true, runValidators: true },
   )
     .then((user) => {
-      res.send({ data: user })
+      res.send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(VALIDATION_ERROR)
-          .send({
-            message: 'Невалидный id.'
-          });
-      } else if (err.message === 'NotValidId') {
-        res.status(ID_ERROR)
-          .send({
-            message: 'Пользователь по указанному _id не найден.'
-          });
-      } else if (err.name === 'ValidationError') {
         return res.status(VALIDATION_ERROR)
           .send({
-            message: 'Переданы некорректные данные при обновлении профиля.'
+            message: 'Невалидный id.',
           });
-      }
-      else if (err.name === 'IdError') {
+      } if (err.message === 'NotValidId') {
         return res.status(ID_ERROR)
           .send({
-            message: 'Пользователь с указанным _id не найден.'
+            message: 'Пользователь по указанному _id не найден.',
           });
-      } else return res.status(ERROR_CODE)
+      } if (err.name === 'ValidationError') {
+        return res.status(VALIDATION_ERROR)
+          .send({
+            message: 'Переданы некорректные данные при обновлении профиля.',
+          });
+      } if (err.name === 'IdError') {
+        return res.status(ID_ERROR)
+          .send({
+            message: 'Пользователь с указанным _id не найден.',
+          });
+      }
+      return res.status(ERROR_CODE)
         .send({
-          message: 'Ошибка по умолчанию.'
+          message: 'Ошибка по умолчанию.',
         });
     });
 };
 
 module.exports.updateAvatar = (req, res) => {
-  const { avatar } = req.body;  // достанем идентификатор
+  const { avatar } = req.body; // достанем идентификатор
   User.findByIdAndUpdate(
     req.user._id, { avatar }, { new: true, runValidators: true },
   )
     .then((user) => {
-      res.send({ data: user })
+      res.send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(VALIDATION_ERROR)
-          .send({
-            message: 'Невалидный id.'
-          });
-      } else if (err.message === 'NotValidId') {
-        res.status(ID_ERROR)
-          .send({
-            message: 'Пользователь по указанному _id не найден.'
-          });
-      } else if (err.name === 'ValidationError') {
         return res.status(VALIDATION_ERROR)
           .send({
-            message: 'Переданы некорректные данные при обновлении аватара.'
+            message: 'Невалидный id.',
           });
-      } else if (err.name === 'IdError') {
+      } if (err.message === 'NotValidId') {
         return res.status(ID_ERROR)
           .send({
-            message: 'Пользователь с указанным _id не найден.'
+            message: 'Пользователь по указанному _id не найден.',
           });
-      };
+      } if (err.name === 'ValidationError') {
+        return res.status(VALIDATION_ERROR)
+          .send({
+            message: 'Переданы некорректные данные при обновлении аватара.',
+          });
+      } if (err.name === 'IdError') {
+        return res.status(ID_ERROR)
+          .send({
+            message: 'Пользователь с указанным _id не найден.',
+          });
+      }
       return res.status(ERROR_CODE)
         .send({
-          message: 'Ошибка по умолчанию.'
+          message: 'Ошибка по умолчанию.',
         });
     });
 };
