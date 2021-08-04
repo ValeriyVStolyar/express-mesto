@@ -1,5 +1,5 @@
 # Logs
-logs
+/logs
 *.log
 npm-debug.log*
 
@@ -7,9 +7,9 @@ npm-debug.log*
 /node_modules
 
 # Optional npm cache directory
-.npm
+/.npm
 
 # Optional REPL history
-.DS_Store
-.idea
-.vscode
+/.DS_Store
+/.idea
+/.vscode
