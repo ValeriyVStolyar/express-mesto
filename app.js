@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const usersRouter = require('./routes/users');
+const { login, createUser } = require('./controllers/users');
 const cardsRouter = require('./routes/cards');
 
 const ROUT_ERROR = 404;
@@ -25,6 +26,9 @@ app.use((req, res, next) => {
 
   next();
 });
+
+app.post('/signin', login);
+app.post('/signup', createUser);
 
 app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);

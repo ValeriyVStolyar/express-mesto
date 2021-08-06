@@ -7,7 +7,7 @@ const
 
 usersRouter.get('/', getUsers);
 usersRouter.get('/:userId', getUserById);
-usersRouter.post('/', createUser);
+// usersRouter.post('/', createUser);
 
 usersRouter.patch('/me', updateUser); // обновляет профиль
 usersRouter.patch('/me/avatar', updateAvatar); // обновляет аватар
