@@ -1,6 +1,7 @@
 const User = require('../models/user');
 const validator = require('validator');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const CREATE_OK = 201;
 const VALIDATION_ERROR = 400;
@@ -13,6 +14,26 @@ module.exports.getUsers = (req, res) => {
   User.find({})
     .then((users) => {
       res.send({ data: users });
+    })
+    .catch((err) => {
+      if (err.message === 'ValidationError') {
+        res.status(VALIDATION_ERROR)
+          .send({
+            message: 'Переданы некорректные данные при создании пользователя.',
+          });
+      }
+      res.status(ERROR_CODE)
+        .send({
+          message: 'Ошибка по умолчанию.',
+        });
+    });
+};
+
+module.exports.getCurrentUser = (req, res) => {
+
+  User.find({})
+    .then((user) => {
+      res.send({ data: user });
     })
     .catch((err) => {
       if (err.message === 'ValidationError') {
@@ -115,25 +136,66 @@ module.exports.createUser = (req, res) => {
     })
 };
 
+// module.exports.login = (req, res) => {
+//   const { email, password } = req.body;
+
+//   User.findOne({ email })
+//     .then((user) => {
+//       if (!user) {
+//         return Promise.reject(new Error('Неправильные почта или пароль'));
+//       }
+
+//       return bcrypt.compare(password, user.password);
+//     })
+//     .then((matched) => {
+//       if (!matched) {
+//         // хеши не совпали — отклоняем промис
+//         return Promise.reject(new Error('Неправильные почта или пароль'));
+//       }
+
+//       // аутентификация успешна
+//       res.send({ message: 'Всё верно!' });
+//     })
+//     .catch((err) => {
+//       res
+//         .status(401)
+//         .send({ message: err.message });
+//     });
+// };
+
+// module.exports.login = (req, res) => {
+//   const { email, password } = req.body;
+
+//   return User.findUserByCredentials(email, password)
+//     .then((user) => {
+//       // аутентификация успешна! пользователь в переменной user
+//       res.send({ message: 'Всё верно!' })
+//     })
+//     .catch((err) => {
+//       // ошибка аутентификации
+//       res
+//         .status(401)
+//         .send({ message: err.message });
+//     });
+// };
+
 module.exports.login = (req, res) => {
   const { email, password } = req.body;
 
-  User.findOne({ email })
+  return User.findUserByCredentials(email, password)
     .then((user) => {
-      if (!user) {
-        return Promise.reject(new Error('Неправильные почта или пароль'));
-      }
+      // создадим токен
+      // const token = jwt.sign({ _id: user._id }, 'some-secret-key');
 
-      return bcrypt.compare(password, user.password);
-    })
-    .then((matched) => {
-      if (!matched) {
-        // хеши не совпали — отклоняем промис
-        return Promise.reject(new Error('Неправильные почта или пароль'));
-      }
+      const token = jwt.sign(
+        { _id: user._id },
+        'some-secret-key',
+        { expiresIn: '7d' } // токен будет просрочен через час после создания
+      );
 
-      // аутентификация успешна
-      res.send({ message: 'Всё верно!' });
+      // вернём токен
+      res.send({ token });
+      // res.send({ message: 'Всё верно!' })
     })
     .catch((err) => {
       res
