@@ -31,7 +31,7 @@ module.exports.getUsers = (req, res) => {
 
 module.exports.getCurrentUser = (req, res) => {
 
-  User.find({})
+  User.findOne(req.user._id)
     .then((user) => {
       res.send({ data: user });
     })
