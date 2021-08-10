@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcrypt');
+const EmailOrPasswordError = require('../errors/email-password-err');
+// const { delete } = require('../routes/users');
 
 const userSchema = new mongoose.Schema({
   name: { // у пользователя есть имя — опишем требования к имени в схеме:
@@ -20,17 +22,19 @@ const userSchema = new mongoose.Schema({
   avatar: {
     type: String,
     // required: true,
+    validate: {
+      validator(v) {
+        return validator.isURL(v);
+      },
+    },
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
   },
   email: {
     type: String,
     validate: {
       validator(v) {
-        // return v === /.@./gi;
-        return v = /\d/gi;
-        // return v > 5;
+        return validator.isEmail(v);
       },
-      message: 'Wrong email',
     },
     required: true,
     unique: true,
@@ -43,17 +47,40 @@ const userSchema = new mongoose.Schema({
   },
 });
 
+function toJSON() {
+  const obj = this.toObject();
+  delete obj.password;
+  return obj;
+}
+
+userSchema.methods.toJSON = toJSON;
+
 userSchema.statics.findUserByCredentials = function (email, password) {
   return this.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-        return Promise.reject(new Error('Неправильные почта или пароль'));
+        // return Promise.reject(new Error('Неправильные почта или пароль!'));
+        return Promise.reject(new EmailOrPasswordError);
+        // return res.status(404).send({ message: "User is not found." })
+        // throw new AuthorizationError;
       }
 
-      return bcrypt.compare(password, user.password)
+      return bcrypt.compare(password, user.password,
+      //   ((error, isValid) => {
+      //   if(error) {
+      //     res.status(403).send({ error: error });
+      //   }
+      //   if(!isValid) {
+      //     res.status(403).send({ error: 'Password is wrong' });
+      //   }
+      //   if(isValid) {
+      //     return user;
+      //   }
+      // })
+      )
         .then((matched) => {
           if (!matched) {
-            return Promise.reject(new Error('Неправильные почта или пароль'));
+            return Promise.reject(new EmailOrPasswordError);
           }
           return user; // теперь user доступен
         });

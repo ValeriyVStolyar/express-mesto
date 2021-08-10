@@ -2,6 +2,11 @@ const User = require('../models/user');
 const validator = require('validator');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
+const NotFoundIdError = require('../errors/not-found-id-err');
+const ValidationError = require('../errors/cast-err');
+const EmptyFieldError = require('../errors/empty-field-err');
+const ExistUserError = require('../errors/exist-user-err');
 
 const CREATE_OK = 201;
 const VALIDATION_ERROR = 400;
@@ -49,31 +54,41 @@ module.exports.getCurrentUser = (req, res) => {
     });
 };
 
-module.exports.getUserById = (req, res) => {
+module.exports.getUserById = (req, res, next) => {
 
   User.findById(req.params.userId)
-    .orFail(new Error('NotValidId'))
+    // .orFail(new Error('NotValidId'))
+    .orFail(new NotFoundIdError)
+    // .orFail(new ValidationError)
     .then((user) => {
       res.send({ data: user });
     })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        res.status(VALIDATION_ERROR)
-          .send({
-            message: 'Невалидный id.',
-          });
-      } else if (err.message === 'NotValidId') {
-        res.status(ID_ERROR)
-          .send({
-            message: 'Пользователь по указанному _id не найден.',
-          });
-      } else {
-        res.status(ERROR_CODE)
-          .send({
-            message: 'Ошибка по умолчанию.',
-          });
-      }
-    });
+  .catch((err) => {
+    if (err.name === 'CastError') {
+      // res.status(VALIDATION_ERROR)
+      //   .send({
+      //     message: 'Невалидный id.',
+      //   });
+      throw new ValidationError;
+      // throw new AuthorizationError;
+    }
+    //   if (err.name === 'CastError') {
+    //   res.status(VALIDATION_ERROR)
+    //     .send({
+    //       message: 'Невалидный id.',
+    //     });
+    //   // throw new ValidationError;
+    //   // throw new AuthorizationError;
+    // }
+    //  else {
+    //   res.status(ERROR_CODE)
+    //     .send({
+    //       message: 'Ошибка по умолчанию.',
+    //     });
+    // }
+    next(err);
+  })
+  .catch(next);
 };
 
 // module.exports.createUser = (req, res) => {
@@ -96,23 +111,32 @@ module.exports.getUserById = (req, res) => {
 //     });
 // };
 
-module.exports.createUser = (req, res) => {
+module.exports.createUser = (req, res, next) => {
   const { name, about, avatar, email, password } = req.body; // достанем идентификатор
   if (!email || !password) {
-    return res.status(VALIDATION_ERROR)
-      .send({
-        message: 'email or password are not should be empty.',
-      });
+    // return res.status(VALIDATION_ERROR)
+    //   .send({
+    //     message: 'email or password are not should be empty.',
+    //   });
+    throw new EmptyFieldError;
   }
 
   User.findOne({ email })
     .then((user) => {
       if (user) {
-        return res.status(NOTVACANT_ERROR)
-          .send({
-            message: 'This user already exist.',
-          });
-      } else {
+      // if (err.name === "MongoError" && err.code === 11000) {
+        throw new ExistUserError;
+        // return Promise.reject(new ExistUserError);
+        // return res.status(NOTVACANT_ERROR)
+        //   .send({
+        //     message: 'This user already exist.',
+        //   });
+      }
+      // else if (err.name === "MongoError" && err.code === 11000) {
+      //     // Обработка ошибки
+      //     throw new MongoError;
+      // }
+      else {
         bcrypt.hash(password, 10)
           .then((hash) => {
             User.create({ name, about, avatar, email, password: hash })
@@ -134,6 +158,7 @@ module.exports.createUser = (req, res) => {
           })
       }
     })
+    .catch(next);
 };
 
 // module.exports.login = (req, res) => {
@@ -194,14 +219,26 @@ module.exports.login = (req, res) => {
       );
 
       // вернём токен
-      res.send({ token });
+      res
+      // .cookie('jwt', token {
+      //   httpOnly: true,
+      //   sameSite: true
+      // })
+      .send({ token });
+      // res.send({ user: user.toJSON() });
+      // res
+      // .cookie('jwt', token {
+      //   httpOnly: true,
+      //   sameSite: true,
+      // })
+      // .status(200).send({ user: user.toJSON()})
       // res.send({ message: 'Всё верно!' })
     })
-    .catch((err) => {
-      res
-        .status(401)
-        .send({ message: err.message });
-    });
+    // .catch((err) => {
+    //   res
+    //     .status(401)
+    //     .send({ message: err.message });
+    // });
 };
 
 module.exports.updateUser = (req, res) => {
