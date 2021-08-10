@@ -3,11 +3,6 @@ class ValidationError extends Error {
     super(message);
     this.statusCode = 400;
     this.message = 'Невалидный id.';
-    console.log('this.statusCode');
-    console.log(this.statusCode);
-    console.log(this.message);
-    console.log(this.name);
-    console.log();
   }
 }
 

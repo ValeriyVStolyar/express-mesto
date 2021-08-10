@@ -3,8 +3,6 @@ class ExistUserError extends Error {
     super(message);
     this.statusCode = 403;
     this.message = 'Такой пользователь уже существует.';
-    console.log(this.statusCode);
-    console.log(this.message);
   }
 }
 
