@@ -2,6 +2,7 @@ const Card = require('../models/card');
 const NotFoundIdError = require('../errors/not-found-id-err');
 const ValidationError = require('../errors/cast-err');
 const WrongDataError = require('../errors/data_err');
+const NotPermissionError = require('../errors/permission-err');
 
 const CREATE_OK = 201;
 
@@ -39,6 +40,9 @@ module.exports.deleteCard = (req, res, next) => {
   Card.findByIdAndDelete(req.params.cardId)
     .orFail(new NotFoundIdError('Карточка с указанным _id не найдена.'))
     .then((card) => {
+      if (card.owner._id !== req.user._id) {
+        throw new NotPermissionError;
+      }
       res.send({ data: card });
     })
     .catch((err) => {
@@ -57,7 +61,12 @@ module.exports.likeCard = (req, res, next) => {
     { new: true },
   )
     .orFail(new NotFoundIdError('Карточка с указанным _id не найдена.'))
-    .then((card) => res.send({ data: card }))
+    .then((card) => {
+      if (card.owner._id !== req.user._id) {
+        throw new NotPermissionError;
+      }
+      res.send({ data: card })
+    })
     .catch((err) => {
       if (err.name === 'CastError') {
         throw new ValidationError();
@@ -78,7 +87,12 @@ module.exports.dislikeCard = (req, res, next) => {
     { new: true },
   )
     .orFail(new NotFoundIdError('Карточка с указанным _id не найдена.'))
-    .then((card) => res.send({ data: card }))
+    .then((card) => {
+      if (card.owner._id !== req.user._id) {
+        throw new NotPermissionError;
+      }
+      res.send({ data: card })
+    })
     .catch((err) => {
       if (err.name === 'CastError') {
         throw new ValidationError();

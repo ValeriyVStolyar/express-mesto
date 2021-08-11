@@ -1,7 +1,5 @@
-const validator = require('validator');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const cookieParser = require('cookie-parser');
 const User = require('../models/user');
 const NotFoundIdError = require('../errors/not-found-id-err');
 const ValidationError = require('../errors/cast-err');
@@ -73,13 +71,15 @@ module.exports.createUser = (req, res, next) => {
             User.create({
               name, about, avatar, email, password: hash,
             })
-              .then((user) => {
+              // .then((user) => {
+              .then(() => {
                 res.status(CREATE_OK).send({ data: user.toJSON() });
               })
               .catch((err) => {
                 if (err.name === 'ValidationError') {
                   throw new WrongDataError('Переданы некорректные данные при создании пользователя.');
                 }
+
                 next(err);
               })
               .catch(next);

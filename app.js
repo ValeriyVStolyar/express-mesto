@@ -5,7 +5,6 @@ const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const { celebrate, Joi } = require('celebrate');
 const { errors } = require('celebrate');
-const connect = require('connect');
 const usersRouter = require('./routes/users');
 const { login, createUser } = require('./controllers/users');
 const cardsRouter = require('./routes/cards');
@@ -32,7 +31,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // app.use((req, res, next) => {
 //   req.user = {
-//     _id: '610010225b182b6448caf134', // вставьте сюда _id созданного в предыдущем пункте пользователя
+//     _id: '610010225b182b6448caf134',
 //   };
 
 //   next();
@@ -53,7 +52,7 @@ app.use(auth);
 app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);
 
-app.use((req, res) => {
+app.use(() => {
   throw new NotExistRoutError();
 });
 
