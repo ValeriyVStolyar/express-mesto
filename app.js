@@ -10,6 +10,7 @@ const { login, createUser } = require('./controllers/users');
 const cardsRouter = require('./routes/cards');
 const auth = require('./middlewares/auth');
 const NotExistRoutError = require('./errors/route-err');
+const errorsHandle = require('./middlewares/errors-handle');
 
 // const http = require('http');
 // parse urlencoded request bodies into req.body
@@ -29,15 +30,23 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // app.use(bodyParser.urlencoded({extended: false}));
 // app.use(express.cookieParser());
 
-// app.use((req, res, next) => {
-//   req.user = {
-//     _id: '610010225b182b6448caf134',
-//   };
+app.use((req, res, next) => {
+  req.user = {
+    _id: '610010225b182b6448caf134',
+  };
 
-//   next();
-// });
+  next();
+});
 
-app.post('/signin', login);
+app.post('/signin',
+  celebrate({
+    body: Joi.object().keys({
+      email: Joi.string().required().email(),
+      password: Joi.string().required().min(5),
+    }),
+  }),
+  login);
+
 app.post('/signup',
   celebrate({
     body: Joi.object().keys({
@@ -47,7 +56,7 @@ app.post('/signup',
   }),
   createUser);
 
-app.use(auth);
+// app.use(auth);
 
 app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);
@@ -66,20 +75,6 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 
 // app.use(express.static(path.join(__dirname, 'public')));
 // теперь клиент имеет доступ только к публичным файлам
-
-const errorsHandle = ((err, req, res, next) => {
-  const { statusCode = 500, message } = err;
-
-  res
-    .status(statusCode)
-    .send({
-      // проверяем статус и выставляем сообщение в зависимости от него
-      message: statusCode === 500
-        ? 'На сервере произошла ошибка.'
-        : message,
-    });
-  next();
-});
 
 app.use(errors()); // обработчик ошибок celebrate
 

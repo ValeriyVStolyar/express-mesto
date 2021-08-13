@@ -20,13 +20,12 @@ const userSchema = new mongoose.Schema({
   },
   avatar: {
     type: String,
-    // required: true,
-    match: /^http*\:\/{2}[w{3}\.]*/,
-    // validate: {
-    // validator(v) {
-    //   return validator.isURL(v);
-    // },
-    // },
+    match: /^https?:\/{2}(w{3}\.)?((((\w+[-]*))*)\.[a-z]{2,6}((\/?\w+\/?){1,9})?|(((\w*\.){1,9}([a-z]){1,6}(\/\w*[-]*){1,9}(\w*)(\.[a-z]+))))(\#)?/gmi,
+    validate: {
+      validator(v) {
+        return validator.isURL(v);
+      },
+    },
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
   },
   email: {

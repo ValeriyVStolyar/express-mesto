@@ -42,6 +42,7 @@ module.exports.getUserById = (req, res, next) => {
   User.findById(req.params.userId)
     .orFail(new NotFoundIdError('Пользователь по указанному _id не найден.'))
     .then((user) => {
+      console.log(req.params)
       res.send({ data: user });
     })
     .catch((err) => {
@@ -62,8 +63,8 @@ module.exports.createUser = (req, res, next) => {
   }
 
   User.findOne({ email })
-    .then((user) => {
-      if (user) {
+    .then((userr) => {
+      if (userr) {
         throw new ExistUserError();
       } else {
         bcrypt.hash(password, 10)
@@ -72,7 +73,8 @@ module.exports.createUser = (req, res, next) => {
               name, about, avatar, email, password: hash,
             })
               // .then((user) => {
-              .then(() => {
+              .then((user) => {
+                console.log(user)
                 res.status(CREATE_OK).send({ data: user.toJSON() });
               })
               .catch((err) => {
@@ -82,7 +84,7 @@ module.exports.createUser = (req, res, next) => {
 
                 next(err);
               })
-              .catch(next);
+              //.catch(next);
           });
       }
     })

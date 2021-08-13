@@ -19,12 +19,16 @@ module.exports.getCards = (req, res, next) => {
 };
 
 module.exports.createCard = (req, res, next) => {
-  //  console.log(req.user._id); // _id станет доступен
+  console.log(req.user._id); // _id станет доступен
 
   const { name, link } = req.body;
+  console.log(name)
+  console.log(link)
 
   Card.create({ name, link, owner: req.user._id })
     .then((card) => {
+      console.log('card')
+      console.log(card)
       res.status(CREATE_OK).send({ data: card });
     })
     .catch((err) => {
