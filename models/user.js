@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema({
   },
   avatar: {
     type: String,
-    match: /^https?:\/{2}(w{3}\.)?((((\w+[-]*))*)\.[a-z]{2,6}((\/?\w+\/?){1,9})?|(((\w*\.){1,9}([a-z]){1,6}(\/\w*[-]*){1,9}(\w*)(\.[a-z]+))))(\#)?/gmi,
+    match: /^https?:\/{2}(w{3}\.)?((((\w+[-]*))*)\.[a-z]{2,6}((\/?\w+\/?){1,9})?|(((\w*\.){1,9}([a-z]){1,6}(\/\w*[-]*){1,9}(\w*)(\.[a-z]+))))(#)?/gmi,
     validate: {
       validator(v) {
         return validator.isURL(v);

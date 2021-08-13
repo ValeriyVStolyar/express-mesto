@@ -42,7 +42,6 @@ module.exports.getUserById = (req, res, next) => {
   User.findById(req.params.userId)
     .orFail(new NotFoundIdError('Пользователь по указанному _id не найден.'))
     .then((user) => {
-      console.log(req.params)
       res.send({ data: user });
     })
     .catch((err) => {
@@ -74,7 +73,6 @@ module.exports.createUser = (req, res, next) => {
             })
               // .then((user) => {
               .then((user) => {
-                console.log(user)
                 res.status(CREATE_OK).send({ data: user.toJSON() });
               })
               .catch((err) => {
@@ -83,8 +81,8 @@ module.exports.createUser = (req, res, next) => {
                 }
 
                 next(err);
-              })
-              //.catch(next);
+              });
+            // .catch(next);
           });
       }
     })

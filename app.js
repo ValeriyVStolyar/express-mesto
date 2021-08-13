@@ -30,13 +30,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // app.use(bodyParser.urlencoded({extended: false}));
 // app.use(express.cookieParser());
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: '610010225b182b6448caf134',
-  };
+// app.use((req, res, next) => {
+//   req.user = {
+//     _id: '610010225b182b6448caf134',
+//   };
 
-  next();
-});
+//   next();
+// });
 
 app.post('/signin',
   celebrate({
@@ -56,7 +56,7 @@ app.post('/signup',
   }),
   createUser);
 
-// app.use(auth);
+app.use(auth);
 
 app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);

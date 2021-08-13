@@ -9,37 +9,37 @@ const {
 cardsRouter.get('/', getCards);
 
 cardsRouter.post('/',
-celebrate({
-  body: Joi.object().keys({
-    name: Joi.string().required().min(2).max(30),
-    link: Joi.string().required()
-    .pattern(/^https?:\/{2}(w{3}\.)?((((\w+[-]*))*)\.[a-z]{2,6}((\/?\w+\/?){1,9})?|(((\w*\.){1,9}([a-z]){1,6}(\/\w*[-]*){1,9}(\w*)(\.[a-z]+))))(\#)?/),
+  celebrate({
+    body: Joi.object().keys({
+      name: Joi.string().required().min(2).max(30),
+      link: Joi.string().required()
+        .pattern(/^https?:\/{2}(w{3}\.)?((((\w+[-]*))*)\.[a-z]{2,6}((\/?\w+\/?){1,9})?|(((\w*\.){1,9}([a-z]){1,6}(\/\w*[-]*){1,9}(\w*)(\.[a-z]+))))(#)?/),
+    }),
   }),
-}),
-createCard);
+  createCard);
 
 cardsRouter.delete('/:cardId',
-celebrate({
-  params: Joi.object().keys({
-    cardId: Joi.string().hex().length(24),
+  celebrate({
+    params: Joi.object().keys({
+      cardId: Joi.string().hex().length(24),
+    }),
   }),
-}),
-deleteCard);
+  deleteCard);
 
 cardsRouter.put('/:cardId/likes',
-celebrate({
-  params: Joi.object().keys({
-    cardId: Joi.string().hex().length(24),
+  celebrate({
+    params: Joi.object().keys({
+      cardId: Joi.string().hex().length(24),
+    }),
   }),
-}),
-likeCard);
+  likeCard);
 
 cardsRouter.delete('/:cardId/likes',
-celebrate({
-  params: Joi.object().keys({
-    cardId: Joi.string().hex().length(24),
+  celebrate({
+    params: Joi.object().keys({
+      cardId: Joi.string().hex().length(24),
+    }),
   }),
-}),
-dislikeCard);
+  dislikeCard);
 
 module.exports = cardsRouter;
