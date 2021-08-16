@@ -11,6 +11,7 @@ const cardsRouter = require('./routes/cards');
 const auth = require('./middlewares/auth');
 const NotExistRoutError = require('./errors/route-err');
 const errorsHandle = require('./middlewares/errors-handle');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 // const http = require('http');
 // parse urlencoded request bodies into req.body
@@ -37,6 +38,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 //   next();
 // });
+
+app.use(requestLogger); // подключаем логгер запросов
 
 app.post('/signin',
   celebrate({
@@ -75,6 +78,8 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 
 // app.use(express.static(path.join(__dirname, 'public')));
 // теперь клиент имеет доступ только к публичным файлам
+
+app.use(errorLogger); // подключаем логгер ошибок
 
 app.use(errors()); // обработчик ошибок celebrate
 
