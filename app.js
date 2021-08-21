@@ -41,21 +41,22 @@ app.use(function (req, res, next) {
   const requestHeaders = req.headers['access-control-request-headers'];
 
   // // проверяем, что источник запроса есть среди разрешённых
-  // if (allowedCors.includes(origin)) {
-  //   // устанавливаем заголовок, который разрешает браузеру запросы с этого источника
-  //   res.header('Access-Control-Allow-Origin', origin);
-  //   // устанавливаем заголовок, который разрешает браузеру запросы из любого источника
-  //   // res.header('Access-Control-Allow-Origin', "*");
-  // }
-
-  if (method === 'OPTIONS') {
-    // разрешаем кросс-доменные запросы любых типов (по умолчанию)
-    res.header('Access-Control-Allow-Methods', DEFAULT_ALLOWED_METHODS);
-    // разрешаем кросс-доменные запросы с этими заголовками
-    res.header('Access-Control-Allow-Headers', requestHeaders);
-    // завершаем обработку запроса и возвращаем результат клиенту
+  if (allowedCors.includes(origin)) {
+    // устанавливаем заголовок, который разрешает браузеру запросы с этого источника
+    // res.header('Access-Control-Allow-Origin', origin);
+    // устанавливаем заголовок, который разрешает браузеру запросы из любого источника
+    res.header('Access-Control-Allow-Origin', "*");
     return res.end();
   }
+
+  // if (method === 'OPTIONS') {
+  //   // разрешаем кросс-доменные запросы любых типов (по умолчанию)
+  //   res.header('Access-Control-Allow-Methods', DEFAULT_ALLOWED_METHODS);
+  //   // разрешаем кросс-доменные запросы с этими заголовками
+  //   res.header('Access-Control-Allow-Headers', requestHeaders);
+  //   // завершаем обработку запроса и возвращаем результат клиенту
+  //   return res.end();
+  // }
 
   next();
 });
