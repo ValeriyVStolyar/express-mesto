@@ -40,13 +40,13 @@ app.use(function (req, res, next) {
   // сохраняем список заголовков исходного запроса
   const requestHeaders = req.headers['access-control-request-headers'];
 
-  // проверяем, что источник запроса есть среди разрешённых
-  if (allowedCors.includes(origin)) {
-    // устанавливаем заголовок, который разрешает браузеру запросы с этого источника
-    res.header('Access-Control-Allow-Origin', origin);
-    // устанавливаем заголовок, который разрешает браузеру запросы из любого источника
-    // res.header('Access-Control-Allow-Origin', "*");
-  }
+  // // проверяем, что источник запроса есть среди разрешённых
+  // if (allowedCors.includes(origin)) {
+  //   // устанавливаем заголовок, который разрешает браузеру запросы с этого источника
+  //   res.header('Access-Control-Allow-Origin', origin);
+  //   // устанавливаем заголовок, который разрешает браузеру запросы из любого источника
+  //   // res.header('Access-Control-Allow-Origin', "*");
+  // }
 
   if (method === 'OPTIONS') {
     // разрешаем кросс-доменные запросы любых типов (по умолчанию)
