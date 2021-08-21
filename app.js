@@ -24,6 +24,28 @@ const { PORT = 3000 } = process.env;
 const app = express();
 // const app = connect();
 
+// Массив доменов, с которых разрешены кросс-доменные запросы
+const allowedCors = [
+  'https://vvs-mesto.nomoredomains.club',
+  'http://vvs-mesto.nomoredomains.club',
+  'localhost:3000'
+];
+
+app.use(function(req, res, next) {
+  const { origin } = req.headers; // Сохраняем источник запроса в переменную origin
+  // проверяем, что источник запроса есть среди разрешённых
+  if (allowedCors.includes(origin)) {
+    // устанавливаем заголовок, который разрешает браузеру запросы с этого источника
+    res.header('Access-Control-Allow-Origin', origin);
+  }
+
+  next();
+});
+
+
+
+
+
 app.use(helmet());
 
 app.use(bodyParser.json());
