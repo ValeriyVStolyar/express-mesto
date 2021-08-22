@@ -34,45 +34,67 @@ const cors = require('cors');
 //   console.log('CORS-enabled web server listening on port 80')
 // })
 
+const corsOptions = {
 
-// Массив доменов, с которых разрешены кросс-доменные запросы
-const allowedCors = [
-  'https://vvs-mesto.nomoredomains.club',
-  'http://vvs-mesto.nomoredomains.club',
-  'localhost:3000'
-];
+// {
+  "origin": "*",
+  "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+  "preflightContinue": false,
+  "optionsSuccessStatus": 204
+// }
+  // origin: [
+  //   'https://vvs-mesto.nomoredomains.club',
+  //   'http://vvs-mesto.nomoredomains.club',
+  //   'localhost:3000',
+  // ],
+};
 
-app.use(function (req, res, next) {
-  const { origin } = req.headers; // Сохраняем источник запроса в переменную origin
+// {
+//   "origin": "*",
+//   "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+//   "preflightContinue": false,
+//   "optionsSuccessStatus": 204
+// }
 
-  const { method } = req; // Сохраняем тип запроса (HTTP-метод) в соответствующую переменную
-  // Значение для заголовка Access-Control-Allow-Methods по умолчанию (разрешены все типы запросов)
-  const DEFAULT_ALLOWED_METHODS = "GET,HEAD,PUT,PATCH,POST,DELETE";
-  // сохраняем список заголовков исходного запроса
-  const requestHeaders = req.headers['access-control-request-headers'];
+// // Массив доменов, с которых разрешены кросс-доменные запросы
+// const allowedCors = [
+//   'https://vvs-mesto.nomoredomains.club',
+//   'http://vvs-mesto.nomoredomains.club',
+//   'localhost:3000'
+// ];
 
-  // // проверяем, что источник запроса есть среди разрешённых
-  if (allowedCors.includes(origin)) {
-    // устанавливаем заголовок, который разрешает браузеру запросы с этого источника
-    // res.header('Access-Control-Allow-Origin', origin);
-    // устанавливаем заголовок, который разрешает браузеру запросы из любого источника
-    res.header('Access-Control-Allow-Origin', "*");
-    return res.end();
-  }
+// app.use(function (req, res, next) {
+//   const { origin } = req.headers; // Сохраняем источник запроса в переменную origin
 
-  if (method === 'OPTIONS') {
-    // разрешаем кросс-доменные запросы любых типов (по умолчанию)
-    res.header('Access-Control-Allow-Methods', DEFAULT_ALLOWED_METHODS);
-    // разрешаем кросс-доменные запросы с этими заголовками
-    res.header('Access-Control-Allow-Headers', requestHeaders);
-    // завершаем обработку запроса и возвращаем результат клиенту
-    return res.end();
-  }
+//   const { method } = req; // Сохраняем тип запроса (HTTP-метод) в соответствующую переменную
+//   // Значение для заголовка Access-Control-Allow-Methods по умолчанию (разрешены все типы запросов)
+//   const DEFAULT_ALLOWED_METHODS = "GET,HEAD,PUT,PATCH,POST,DELETE";
+//   // сохраняем список заголовков исходного запроса
+//   const requestHeaders = req.headers['access-control-request-headers'];
 
-  next();
-});
+//   // // проверяем, что источник запроса есть среди разрешённых
+//   if (allowedCors.includes(origin)) {
+//     // устанавливаем заголовок, который разрешает браузеру запросы с этого источника
+//     // res.header('Access-Control-Allow-Origin', origin);
+//     // устанавливаем заголовок, который разрешает браузеру запросы из любого источника
+//     res.header('Access-Control-Allow-Origin', "*");
+//     return res.end();
+//   }
 
-app.use(cors())
+//   if (method === 'OPTIONS') {
+//     // разрешаем кросс-доменные запросы любых типов (по умолчанию)
+//     res.header('Access-Control-Allow-Methods', DEFAULT_ALLOWED_METHODS);
+//     // разрешаем кросс-доменные запросы с этими заголовками
+//     res.header('Access-Control-Allow-Headers', requestHeaders);
+//     // завершаем обработку запроса и возвращаем результат клиенту
+//     return res.end();
+//   }
+
+//   next();
+// });
+
+// app.use(cors())
+app.use(cors(corsOptions))
 
 // const { method } = req; // Сохраняем тип запроса (HTTP-метод) в соответствующую переменную
 
