@@ -28,11 +28,11 @@ const cors = require('cors');
 
 app.use(cors())
 
-app.get('/products/:id', function (req, res, next) {
+app.get('/signup', function (req, res, next) {
   res.json({msg: 'This is CORS-enabled for all origins!'})
 })
 
-app.post('/products/:id', function (req, res, next) {
+app.post('/signup', function (req, res, next) {
   res.json({msg: 'This is CORS-enabled for all origins!'})
 })
 
