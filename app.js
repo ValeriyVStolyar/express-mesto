@@ -12,6 +12,7 @@ const auth = require('./middlewares/auth');
 const NotExistRoutError = require('./errors/route-err');
 const errorsHandle = require('./middlewares/errors-handle');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
+const cors = require('./middlewares/cors');
 
 // const http = require('http');
 // parse urlencoded request bodies into req.body
@@ -24,10 +25,12 @@ const { PORT = 3000 } = process.env;
 
 // const app = connect();
 
-const cors = require('cors');
+// const cors = require('cors');
 const app = express();
 
-app.use(cors());
+// app.use(cors());
+
+app.use(cors);
 
 // app.get('/signup', function (req, res, next) {
 //   res.json({msg: 'This is CORS-enabled for all origins!'})
@@ -179,7 +182,7 @@ app.post('/signup',
   }),
   createUser);
 
-// app.use(auth);
+app.use(auth);
 
 app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);
