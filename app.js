@@ -21,12 +21,13 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 // Слушаем 3000 порт
 // const { PORT = 3000, BASE_PATH } = process.env;
 const { PORT = 3000 } = process.env;
-const app = express();
+
 // const app = connect();
 
 const cors = require('cors');
+const app = express();
 
-app.use(cors())
+app.use(cors());
 
 // app.get('/signup', function (req, res, next) {
 //   res.json({msg: 'This is CORS-enabled for all origins!'})
