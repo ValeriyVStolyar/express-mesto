@@ -26,6 +26,10 @@ const app = express();
 
 const cors = require('cors');
 
+// app.use(cors())
+// app.use(cors(corsOptions))
+// app.options('*', cors())
+
 // app.get('/users', function (req, res, next) {
 //   res.json({msg: 'This is CORS-enabled for all origins!'})
 // })
@@ -56,15 +60,15 @@ const cors = require('cors');
 //   "optionsSuccessStatus": 204
 // }
 
-// // Массив доменов, с которых разрешены кросс-доменные запросы
-// const allowedCors = [
-//   'https://vvs-mesto.nomoredomains.club',
-//   'http://vvs-mesto.nomoredomains.club',
-//   'localhost:3000'
-// ];
+// Массив доменов, с которых разрешены кросс-доменные запросы
+const allowedCors = [
+  'https://vvs-mesto.nomoredomains.club',
+  'http://vvs-mesto.nomoredomains.club',
+  'localhost:3000'
+];
 
-// app.use(function (req, res, next) {
-//   const { origin } = req.headers; // Сохраняем источник запроса в переменную origin
+app.use(function (req, res, next) {
+  // const { origin } = req.headers; // Сохраняем источник запроса в переменную origin
 
 //   const { method } = req; // Сохраняем тип запроса (HTTP-метод) в соответствующую переменную
 //   // Значение для заголовка Access-Control-Allow-Methods по умолчанию (разрешены все типы запросов)
@@ -72,14 +76,14 @@ const cors = require('cors');
 //   // сохраняем список заголовков исходного запроса
 //   const requestHeaders = req.headers['access-control-request-headers'];
 
-//   // // проверяем, что источник запроса есть среди разрешённых
-//   if (allowedCors.includes(origin)) {
-//     // устанавливаем заголовок, который разрешает браузеру запросы с этого источника
-//     // res.header('Access-Control-Allow-Origin', origin);
-//     // устанавливаем заголовок, который разрешает браузеру запросы из любого источника
-//     res.header('Access-Control-Allow-Origin', "*");
-//     return res.end();
-//   }
+  // // проверяем, что источник запроса есть среди разрешённых
+  // if (allowedCors.includes(origin)) {
+    // устанавливаем заголовок, который разрешает браузеру запросы с этого источника
+    // res.header('Access-Control-Allow-Origin', origin);
+    // устанавливаем заголовок, который разрешает браузеру запросы из любого источника
+    res.header('Access-Control-Allow-Origin', "*");
+    // return res.end();
+  //}
 
 //   if (method === 'OPTIONS') {
 //     // разрешаем кросс-доменные запросы любых типов (по умолчанию)
@@ -90,12 +94,10 @@ const cors = require('cors');
 //     return res.end();
 //   }
 
-//   next();
-// });
+  next();
+});
 
-// app.use(cors())
-// app.use(cors(corsOptions))
-app.options('*', cors())
+
 
 // const { method } = req; // Сохраняем тип запроса (HTTP-метод) в соответствующую переменную
 
