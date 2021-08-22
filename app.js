@@ -34,20 +34,20 @@ const cors = require('cors');
 //   console.log('CORS-enabled web server listening on port 80')
 // })
 
-const corsOptions = {
+// const corsOptions = {
 
-// {
-  "origin": "*",
-  "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
-  "preflightContinue": false,
-  "optionsSuccessStatus": 204
-// }
-  // origin: [
-  //   'https://vvs-mesto.nomoredomains.club',
-  //   'http://vvs-mesto.nomoredomains.club',
-  //   'localhost:3000',
-  // ],
-};
+// // {
+//   // "origin": "*",
+//   // "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+//   // "preflightContinue": false,
+//   // "optionsSuccessStatus": 204
+// // }
+//   origin: [
+//     'https://vvs-mesto.nomoredomains.club',
+//     'http://vvs-mesto.nomoredomains.club',
+//     'localhost:3000',
+//   ],
+// };
 
 // {
 //   "origin": "*",
@@ -94,7 +94,8 @@ const corsOptions = {
 // });
 
 // app.use(cors())
-app.use(cors(corsOptions))
+// app.use(cors(corsOptions))
+app.options('*', cors())
 
 // const { method } = req; // Сохраняем тип запроса (HTTP-метод) в соответствующую переменную
 
