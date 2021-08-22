@@ -82,7 +82,7 @@ app.use(function (req, res, next) {
     // res.header('Access-Control-Allow-Origin', origin);
     // устанавливаем заголовок, который разрешает браузеру запросы из любого источника
     res.header('Access-Control-Allow-Origin', "*");
-    // return res.end();
+    return res.end();
   //}
 
 //   if (method === 'OPTIONS') {
@@ -94,7 +94,7 @@ app.use(function (req, res, next) {
 //     return res.end();
 //   }
 
-  next();
+  // next();
 });
 
 
