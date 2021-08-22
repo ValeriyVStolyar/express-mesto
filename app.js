@@ -26,8 +26,6 @@ const app = express();
 
 const cors = require('cors');
 
-app.use(cors())
-
 // app.get('/users', function (req, res, next) {
 //   res.json({msg: 'This is CORS-enabled for all origins!'})
 // })
@@ -73,6 +71,8 @@ app.use(function (req, res, next) {
 
   next();
 });
+
+app.use(cors())
 
 // const { method } = req; // Сохраняем тип запроса (HTTP-метод) в соответствующую переменную
 
