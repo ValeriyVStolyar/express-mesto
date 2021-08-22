@@ -26,6 +26,20 @@ const app = express();
 
 const cors = require('cors');
 
+app.use(cors())
+
+app.get('/products/:id', function (req, res, next) {
+  res.json({msg: 'This is CORS-enabled for all origins!'})
+})
+
+app.post('/products/:id', function (req, res, next) {
+  res.json({msg: 'This is CORS-enabled for all origins!'})
+})
+
+app.listen(80, function () {
+  console.log('CORS-enabled web server listening on port 80')
+})
+
 // app.use(cors())
 // app.use(cors(corsOptions))
 // app.options('*', cors())
@@ -53,21 +67,19 @@ const cors = require('cors');
 //   ],
 // };
 
-// {
-//   "origin": "*",
-//   "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+//  "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
 //   "preflightContinue": false,
 //   "optionsSuccessStatus": 204
 // }
 
 // Массив доменов, с которых разрешены кросс-доменные запросы
-const allowedCors = [
-  'https://vvs-mesto.nomoredomains.club',
-  'http://vvs-mesto.nomoredomains.club',
-  'localhost:3000'
-];
+// const allowedCors = [
+//   'https://vvs-mesto.nomoredomains.club',
+//   'http://vvs-mesto.nomoredomains.club',
+//   'localhost:3000'
+// ];
 
-app.use(function (req, res, next) {
+//app.use(function (req, res, next) {
   // const { origin } = req.headers; // Сохраняем источник запроса в переменную origin
 
 //   const { method } = req; // Сохраняем тип запроса (HTTP-метод) в соответствующую переменную
@@ -81,8 +93,8 @@ app.use(function (req, res, next) {
     // устанавливаем заголовок, который разрешает браузеру запросы с этого источника
     // res.header('Access-Control-Allow-Origin', origin);
     // устанавливаем заголовок, который разрешает браузеру запросы из любого источника
-    res.header('Access-Control-Allow-Origin', "*");
-    return res.end();
+    // res.header('Access-Control-Allow-Origin', "*");
+  //  return res.end();
   //}
 
 //   if (method === 'OPTIONS') {
@@ -95,7 +107,9 @@ app.use(function (req, res, next) {
 //   }
 
   // next();
-});
+// }); {
+//   "origin": "*",
+//
 
 
 
