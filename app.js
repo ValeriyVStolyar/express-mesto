@@ -1,3 +1,4 @@
+const crypto = require('crypto'); // экспортируем crypto
 // const path = require('path');
 const express = require('express');
 const mongoose = require('mongoose');
@@ -13,11 +14,17 @@ const NotExistRoutError = require('./errors/route-err');
 const errorsHandle = require('./middlewares/errors-handle');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const cors = require('./middlewares/cors');
+const cookieParser = require('cookie-parser')
 
 // const http = require('http');
 // parse urlencoded request bodies into req.body
 
-// const ROUT_ERROR = 404;
+// //разово для .env напоминалка как генерить
+// const randomString = crypto
+//   .randomBytes(16) // сгенерируем случайную последовательность 16 байт (128 бит)
+//   .toString('hex'); // приведём её к строке
+
+// console.log(randomString); // 5cdd183194489560b0e6bfaf8a81541e
 
 // Слушаем 3000 порт
 // const { PORT = 3000, BASE_PATH } = process.env;
@@ -28,120 +35,15 @@ const { PORT = 3000 } = process.env;
 // const cors = require('cors');
 const app = express();
 
+require('dotenv').config();
+// console.log(process.env.NODE_ENV); // production
 // app.use(cors());
 
 app.use(cors);
 
-// app.get('/signup', function (req, res, next) {
-//   res.json({msg: 'This is CORS-enabled for all origins!'})
-// })
-
-// app.post('/signup', function (req, res, next) {
-//   res.json({msg: 'This is CORS-enabled for all origins!'})
-// })
-
-// app.listen(80, function () {
-//   console.log('CORS-enabled web server listening on port 80')
-// })
-
-// app.use(cors())
-// app.use(cors(corsOptions))
-// app.options('*', cors())
-
-// app.get('/users', function (req, res, next) {
-//   res.json({msg: 'This is CORS-enabled for all origins!'})
-// })
-
-// app.listen(80, function () {
-//   console.log('CORS-enabled web server listening on port 80')
-// })
-
-// const corsOptions = {
-
-// // {
-//   // "origin": "*",
-//   // "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
-//   // "preflightContinue": false,
-//   // "optionsSuccessStatus": 204
-// // }
-//   origin: [
-//     'https://vvs-mesto.nomoredomains.club',
-//     'http://vvs-mesto.nomoredomains.club',
-//     'localhost:3000',
-//   ],
-// };
-
-//  "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
-//   "preflightContinue": false,
-//   "optionsSuccessStatus": 204
-// }
-
-// Массив доменов, с которых разрешены кросс-доменные запросы
-// const allowedCors = [
-//   'https://vvs-mesto.nomoredomains.club',
-//   'http://vvs-mesto.nomoredomains.club',
-//   'localhost:3000'
-// ];
-
-//app.use(function (req, res, next) {
-  // const { origin } = req.headers; // Сохраняем источник запроса в переменную origin
-
-//   const { method } = req; // Сохраняем тип запроса (HTTP-метод) в соответствующую переменную
-//   // Значение для заголовка Access-Control-Allow-Methods по умолчанию (разрешены все типы запросов)
-//   const DEFAULT_ALLOWED_METHODS = "GET,HEAD,PUT,PATCH,POST,DELETE";
-//   // сохраняем список заголовков исходного запроса
-//   const requestHeaders = req.headers['access-control-request-headers'];
-
-  // // проверяем, что источник запроса есть среди разрешённых
-  // if (allowedCors.includes(origin)) {
-    // устанавливаем заголовок, который разрешает браузеру запросы с этого источника
-    // res.header('Access-Control-Allow-Origin', origin);
-    // устанавливаем заголовок, который разрешает браузеру запросы из любого источника
-    // res.header('Access-Control-Allow-Origin', "*");
-  //  return res.end();
-  //}
-
-//   if (method === 'OPTIONS') {
-//     // разрешаем кросс-доменные запросы любых типов (по умолчанию)
-//     res.header('Access-Control-Allow-Methods', DEFAULT_ALLOWED_METHODS);
-//     // разрешаем кросс-доменные запросы с этими заголовками
-//     res.header('Access-Control-Allow-Headers', requestHeaders);
-//     // завершаем обработку запроса и возвращаем результат клиенту
-//     return res.end();
-//   }
-
-  // next();
-// }); {
-//   "origin": "*",
-//
-
-
-
-// const { method } = req; // Сохраняем тип запроса (HTTP-метод) в соответствующую переменную
-
-// Значение для заголовка Access-Control-Allow-Methods по умолчанию (разрешены все типы запросов)
-// const DEFAULT_ALLOWED_METHODS = "GET,HEAD,PUT,PATCH,POST,DELETE";
-
-// // Если это предварительный запрос, добавляем нужные заголовки
-// if (method === 'OPTIONS') {
-//     // разрешаем кросс-доменные запросы любых типов (по умолчанию)
-//     res.header('Access-Control-Allow-Methods', DEFAULT_ALLOWED_METHODS);
-// }
-
-// сохраняем список заголовков исходного запроса
-// const requestHeaders = req.headers['access-control-request-headers'];
-// if (method === 'OPTIONS') {
-//     // разрешаем кросс-доменные запросы с этими заголовками
-//     res.header('Access-Control-Allow-Headers', requestHeaders);
-//     // завершаем обработку запроса и возвращаем результат клиенту
-//     return res.end();
-// }
-
-
-
-
-
 app.use(helmet());
+
+app.use(cookieParser());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -155,6 +57,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 //   next();
 // });
+
+app.get('/posts', (req, res) => {
+  console.log(req.cookies.jwt); // достаём токен
+});
 
 app.use(requestLogger); // подключаем логгер запросов
 
@@ -184,8 +90,13 @@ app.post('/signup',
 
 app.use(auth);
 
+// app.get('/users/me', (req, res) => {
+  // console.log('req.userTest');
+  // console.log(req.user);
+// });
+
 app.use('/users', usersRouter);
-app.use('/cards', cardsRouter);
+// app.use('/cards', cardsRouter);
 
 app.use(() => {
   throw new NotExistRoutError();

@@ -1,5 +1,11 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+
+// require('dotenv').config();
+// const JWT_SECRET = process.env.JWT_SECRET;
+const { NODE_ENV, JWT_SECRET = 'dev-key' } = process.env;
+// const { NODE_ENV, JWT_SECRET } = process.env;
+
 const User = require('../models/user');
 const NotFoundIdError = require('../errors/not-found-id-err');
 const ValidationError = require('../errors/cast-err');
@@ -24,9 +30,13 @@ module.exports.getUsers = (req, res, next) => {
 };
 
 module.exports.getCurrentUser = (req, res, next) => {
+  console.log(req.user, req.user._id, 'getCurrentUser')
+  console.log(req.user, req.params, 'getCurrentUserById')
   User.findOne(req.user._id)
+  // User.findById(req.params.userId)
     .orFail(new NotFoundIdError('Пользователь по указанному _id не найден.'))
     .then((user) => {
+      console.log(req.user)
       res.send({ data: user });
     })
     .catch((err) => {
@@ -39,6 +49,7 @@ module.exports.getCurrentUser = (req, res, next) => {
 };
 
 module.exports.getUserById = (req, res, next) => {
+  console.log(req.params)
   User.findById(req.params.userId)
     .orFail(new NotFoundIdError('Пользователь по указанному _id не найден.'))
     .then((user) => {
@@ -97,15 +108,19 @@ module.exports.login = (req, res, next) => {
       // создадим токен
       const token = jwt.sign(
         { _id: user._id },
-        'some-secret-key',
-        { expiresIn: '7d' }, // токен будет просрочен через час после создания
+        // 'some-secret-key',
+        // JWT_SECRET,
+        NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
+        { expiresIn: '7d' }, // токен будет просрочен через 7 дней после создания
       );
 
       // вернём токен
       res
         .cookie('jwt', token, {
           httpOnly: true,
-          sameSite: true,
+          // sameSite: true,
+          sameSite: 'None',
+          // secure: true,
         })
         .send({ token });
     })
@@ -114,12 +129,16 @@ module.exports.login = (req, res, next) => {
 
 module.exports.updateUser = (req, res, next) => {
   const { name, about } = req.body; // достанем идентификатор
+  console.log(name, about, req.user._id, 'updateUser')
 
   User.findByIdAndUpdate(
     req.user._id, { name, about }, { new: true, runValidators: true },
+    console.log(req.user)
   )
     .orFail(new NotFoundIdError('Пользователь по указанному _id не найден.'))
     .then((user) => {
+      console.log(req.user)
+      console.log(req.user._id)
       res.send({ data: user });
     })
     .catch((err) => {

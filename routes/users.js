@@ -21,6 +21,13 @@ usersRouter.get('/:userId',
 
 usersRouter.get('/me', getCurrentUser);
 
+// usersRouter.get('/users/me', (req, res) => {
+  // console.log('req.userTest');
+  // console.log(req.user);
+// });
+
+
+
 usersRouter.patch('/me',
   celebrate({
     body: Joi.object().keys({
