@@ -10,6 +10,8 @@ const
 
 usersRouter.get('/', getUsers);
 
+usersRouter.get('/me', getCurrentUser);
+
 usersRouter.get('/:userId',
   celebrate({
     params: Joi.object().keys({
@@ -19,11 +21,10 @@ usersRouter.get('/:userId',
   getUserById);
 // usersRouter.post('/', createUser);
 
-usersRouter.get('/me', getCurrentUser);
-
 // usersRouter.get('/users/me', (req, res) => {
   // console.log('req.userTest');
   // console.log(req.user);
+  // console.log(req.user._id);
 // });
 
 

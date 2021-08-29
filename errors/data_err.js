@@ -1,7 +1,7 @@
 class WrongDataError extends Error {
   constructor(message) {
     super(message);
-    this.statusCode = 480;
+    this.statusCode = 400;
   }
 }
 
