@@ -3,8 +3,8 @@ const jwt = require('jsonwebtoken');
 
 // require('dotenv').config();
 // const JWT_SECRET = process.env.JWT_SECRET;
-// const { NODE_ENV, JWT_SECRET = 'dev-key' } = process.env;
-const { NODE_ENV, JWT_SECRET } = process.env;
+const { NODE_ENV, JWT_SECRET = 'dev-key' } = process.env;
+// const { NODE_ENV, JWT_SECRET } = process.env;
 
 const User = require('../models/user');
 const NotFoundIdError = require('../errors/not-found-id-err');
