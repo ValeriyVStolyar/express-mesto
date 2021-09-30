@@ -3,8 +3,8 @@ const jwt = require('jsonwebtoken');
 
 // require('dotenv').config();
 // const JWT_SECRET = process.env.JWT_SECRET;
-const { NODE_ENV, JWT_SECRET = 'dev-key' } = process.env;
-// const { NODE_ENV, JWT_SECRET } = process.env;
+// const { NODE_ENV, JWT_SECRET = 'dev-key' } = process.env;
+const { NODE_ENV, JWT_SECRET } = process.env;
 
 const User = require('../models/user');
 const NotFoundIdError = require('../errors/not-found-id-err');
@@ -32,11 +32,13 @@ module.exports.getUsers = (req, res, next) => {
 module.exports.getCurrentUser = (req, res, next) => {
   console.log(req.user, req.user._id, 'getCurrentUser')
 
-  User.findOne(req.user._id)
+  // User.findOne(req.user._id)
+  User.findById(req.user._id)
     .orFail(new NotFoundIdError('Пользователь по указанному _id не найден.'))
     .then((user) => {
       console.log(req.user)
       res.send({ data: user });
+      // res.send({ user });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -111,18 +113,19 @@ module.exports.login = (req, res, next) => {
         { _id: user._id },
         // 'some-secret-key',
         // JWT_SECRET,
-        // NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
-        NODE_ENV === 'production' ? JWT_SECRET : 'dev-key',
+        NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
+        // NODE_ENV === 'production' ? JWT_SECRET : 'dev-key',
         { expiresIn: '7d' }, // токен будет просрочен через 7 дней после создания
       );
 
       // вернём токен
       res
         .cookie('jwt', token, {
+          // maxAge: 10000000,
           httpOnly: true,
           // sameSite: true,
           sameSite: 'None',
-          // secure: true,
+          secure: true,
         })
         .send({ token });
     })

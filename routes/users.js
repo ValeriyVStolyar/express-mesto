@@ -19,6 +19,7 @@ usersRouter.get('/:userId',
     }),
   }),
   getUserById);
+
 // usersRouter.post('/', createUser);
 
 // usersRouter.get('/users/me', (req, res) => {

@@ -62,12 +62,13 @@ app.get('/posts', (req, res) => {
   console.log(req.cookies.jwt); // достаём токен
 });
 
-app.get('/postsSigned', function (req, res) {
+app.get('/postsSigned', function (req, res, next) {
   // Cookies that have not been signed
   console.log('Cookies: ', req.cookies)
 
   // Cookies that have been signed
   console.log('Signed Cookies: ', req.signedCookies)
+  next();
 })
 
 app.use(requestLogger); // подключаем логгер запросов
@@ -104,7 +105,7 @@ app.use(auth);
 // });
 
 app.use('/users', usersRouter);
-// app.use('/cards', cardsRouter);
+app.use('/cards', cardsRouter);
 
 app.use(() => {
   throw new NotExistRoutError();
@@ -129,5 +130,5 @@ app.use(errorsHandle);
 
 app.listen(PORT, () => {
   // Если всё работает, консоль покажет, какой порт приложение слушает
-  // console.log(`App listening on port ${PORT}`);
+  console.log(`App listening on port ${PORT}`);
 });
