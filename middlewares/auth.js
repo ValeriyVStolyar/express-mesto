@@ -14,7 +14,6 @@ module.exports = (req, res, next) => {
 
   // const token = authorization.replace('Bearer ', '');
   const token = req.cookies.jwt;
-  console.log(token)
 
   // проверяем наличие токена как такового
 if (!token) {
@@ -29,14 +28,12 @@ if (!token) {
     // payload = jwt.verify(token, JWT_SECRET);
     payload = jwt.verify(token, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret');
     // payload = jwt.verify(token, NODE_ENV === 'production' ? JWT_SECRET : 'dev-key');
-    // console.log(payload)
+
   } catch (err) {
     throw new (AuthorizationError('Необходима авторизация.'));
   }
 
   req.user = payload; // записываем пейлоуд в объект запроса
-  console.log(req.user)
-  console.log(JWT_SECRET)
 
   next(); // пропускаем запрос дальше
 };

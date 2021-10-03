@@ -40,7 +40,8 @@ module.exports.deleteCard = (req, res, next) => {
   Card.findByIdAndDelete(req.params.cardId)
     .orFail(new NotFoundIdError('Карточка с указанным _id не найдена.'))
     .then((card) => {
-      if (card.owner._id !== req.user._id) {
+      // if (card.owner._id !== req.user._id) {
+      if(String(card.owner) !== req.user._id) {
         throw new NotPermissionError();
       }
       res.send({ data: card });
@@ -55,6 +56,16 @@ module.exports.deleteCard = (req, res, next) => {
 };
 
 module.exports.likeCard = (req, res, next) => {
+  /*
+  console.log('req.user in likeCard')
+  console.log(req.user)
+  console.log('req.user._id')
+  console.log(req.user._id)
+  console.log('typeof req.user._id')
+  console.log(typeof req.user._id)
+  console.log('req.params.cardId in likeCard')
+  console.log(req.params.cardId)
+  */
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
@@ -62,8 +73,10 @@ module.exports.likeCard = (req, res, next) => {
   )
     .orFail(new NotFoundIdError('Карточка с указанным _id не найдена.'))
     .then((card) => {
-      if (card.owner._id !== req.user._id) {
-        throw new NotPermissionError();
+      // if (card.owner._id !== req.user._id) {
+      // if (card.owner !== req.user._id) {
+      if (String(card.owner) !== req.user._id) {
+        // throw new NotPermissionError();
       }
       res.send({ data: card });
     })
@@ -88,8 +101,10 @@ module.exports.dislikeCard = (req, res, next) => {
   )
     .orFail(new NotFoundIdError('Карточка с указанным _id не найдена.'))
     .then((card) => {
-      if (card.owner._id !== req.user._id) {
-        throw new NotPermissionError();
+      // if (card.owner._id !== req.user._id) {
+      // if (card.owner !== req.user._id) {
+      if (String(card.owner) !== req.user._id) {
+        // throw new NotPermissionError();
       }
       res.send({ data: card });
     })
