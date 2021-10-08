@@ -4,7 +4,6 @@ const usersRouter = require('express').Router();
 const
   {
     getUsers, getUserById, getCurrentUser,
-    // createUser,
     updateUser, updateAvatar,
   } = require('../controllers/users');
 
@@ -20,21 +19,11 @@ usersRouter.get('/:userId',
   }),
   getUserById);
 
-// usersRouter.post('/', createUser);
-
-// usersRouter.get('/users/me', (req, res) => {
-  // console.log('req.userTest');
-  // console.log(req.user);
-  // console.log(req.user._id);
-// });
-
-
-
 usersRouter.patch('/me',
   celebrate({
     body: Joi.object().keys({
-      name: Joi.string().min(2).max(30),
-      about: Joi.string().min(5).max(30),
+      name: Joi.string().min(2).max(30).required(),
+      about: Joi.string().min(5).max(30).required(),
     }),
   }),
   updateUser);

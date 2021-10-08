@@ -19,8 +19,6 @@ module.exports.getCards = (req, res, next) => {
 };
 
 module.exports.createCard = (req, res, next) => {
-  // console.log(req.user._id); // _id станет доступен
-
   const { name, link } = req.body;
 
   Card.create({ name, link, owner: req.user._id })
@@ -37,14 +35,15 @@ module.exports.createCard = (req, res, next) => {
 };
 
 module.exports.deleteCard = (req, res, next) => {
-  Card.findByIdAndDelete(req.params.cardId)
-    .orFail(new NotFoundIdError('Карточка с указанным _id не найдена.'))
+  Card.findById(req.params.cardId)
+    .orFail(() => new NotFoundIdError('Карточка с указанным _id не найдена.'))
     .then((card) => {
-      // if (card.owner._id !== req.user._id) {
-      if(String(card.owner) !== req.user._id) {
-        throw new NotPermissionError();
+      if (String(card.owner) !== req.user._id) {
+        next(new NotPermissionError('Нельзя удалить чужую карточку'));
+      } else {
+        Card.deleteOne(card)
+          .then(() => res.send({ data: card }));
       }
-      res.send({ data: card });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -75,9 +74,9 @@ module.exports.likeCard = (req, res, next) => {
     .then((card) => {
       // if (card.owner._id !== req.user._id) {
       // if (card.owner !== req.user._id) {
-      if (String(card.owner) !== req.user._id) {
-        // throw new NotPermissionError();
-      }
+      // if (String(card.owner) !== req.user._id) {
+      // throw new NotPermissionError();
+      // }
       res.send({ data: card });
     })
     .catch((err) => {
@@ -103,9 +102,9 @@ module.exports.dislikeCard = (req, res, next) => {
     .then((card) => {
       // if (card.owner._id !== req.user._id) {
       // if (card.owner !== req.user._id) {
-      if (String(card.owner) !== req.user._id) {
-        // throw new NotPermissionError();
-      }
+      // if (String(card.owner) !== req.user._id) {
+      // throw new NotPermissionError();
+      // }
       res.send({ data: card });
     })
     .catch((err) => {

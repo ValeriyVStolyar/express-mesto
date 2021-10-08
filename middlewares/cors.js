@@ -1,5 +1,5 @@
 // Значение для заголовка Access-Control-Allow-Methods по умолчанию (разрешены все типы запросов)
-const DEFAULT_ALLOWED_METHODS = "GET,HEAD,PUT,PATCH,POST,DELETE";
+const DEFAULT_ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';
 
 // Массив доменов, с которых разрешены кросс-доменные запросы
 const allowedCors = [

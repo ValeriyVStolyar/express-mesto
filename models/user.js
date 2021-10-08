@@ -6,21 +6,18 @@ const EmailOrPasswordError = require('../errors/email-password-err');
 const userSchema = new mongoose.Schema({
   name: { // у пользователя есть имя — опишем требования к имени в схеме:
     type: String, // имя — это строка
-    // required: true, // оно должно быть у каждого пользователя, так что имя — обязательное поле
     minlength: 2, // минимальная длина имени — 2 символа
     maxlength: 30, // а максимальная — 30 символов
     default: 'Жак-Ив Кусто',
   },
   about: {
     type: String,
-    // required: true,
     minlength: 2,
     maxlength: 30,
     default: 'Исследователь',
   },
   avatar: {
     type: String,
-    match: /^https?:\/{2}(w{3}\.)?((((\w+[-]*))*)\.[a-z]{2,6}((\/?\w+\/?){1,9})?|(((\w*\.){1,9}([a-z]){1,6}(\/\w*[-]*){1,9}(\w*)(\.[a-z]+))))(#)?/gmi,
     validate: {
       validator(v) {
         return validator.isURL(v);
@@ -41,7 +38,6 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
-    minlength: 3,
     select: false,
   },
 });
@@ -54,7 +50,7 @@ function toJSON() {
 
 userSchema.methods.toJSON = toJSON;
 
-userSchema.statics.findUserByCredentials = function (email, password) {
+userSchema.statics.findUserByCredentials = function shemaWithoutTheName(email, password) {
   return this.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {

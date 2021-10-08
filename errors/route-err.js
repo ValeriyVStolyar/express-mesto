@@ -1,7 +1,7 @@
 class NotExistRoutError extends Error {
   constructor(message) {
     super(message);
-    this.statusCode = 454;
+    this.statusCode = 404;
     this.message = 'Был запрошен несуществующий роут.';
   }
 }
